@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-login
+<%@include file="/WEB-INF/views/include/menu.jsp" %>
 <form action="/login" method="post">
 	id:<input type="text" name="id">
 	<button>login</button>

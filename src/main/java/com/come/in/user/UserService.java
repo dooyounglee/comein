@@ -1,4 +1,4 @@
-package com.come.in;
+package com.come.in.user;
 
 import java.util.List;
 import java.util.Optional;

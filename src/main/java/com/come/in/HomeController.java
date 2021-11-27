@@ -1,6 +1,5 @@
 package com.come.in;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,14 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.come.in.user.User;
+import com.come.in.user.UserService;
+
 @Controller
 public class HomeController {
 
 	@Autowired
     private UserService userService;
-	
-	@Autowired
-    private FrequencyService frequencyService;
 	
 	@RequestMapping("/main")
 	public String main(Model model) {
@@ -50,11 +49,6 @@ public class HomeController {
 		    HttpSession session = request.getSession();
 		    session.setAttribute("loginUser", user.get());
 		    
-		    Optional<Frequency> frequency = frequencyService.getFrequencyByUserId(user.get().get_id());
-		    if(frequency.isPresent()) {
-			    session.setAttribute("loginFrequency", frequency.get());
-		    }
-		    
 			return "redirect:/main";
 		}else {
 			return "redirect:/login";
@@ -71,4 +65,5 @@ public class HomeController {
 
 	    return "redirect:/main";
 	}
+	
 }

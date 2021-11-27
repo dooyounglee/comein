@@ -8,19 +8,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-<c:if test="${loginUser ne null }">
-user:${loginUser.name }<br>
-	<c:if test="${loginFrequency ne null }">
-		frequency: ${loginFrequency }<br>
-	</c:if>
-	<c:if test="${loginFrequency eq null }">
-		frequency를 입력하세요<br>
-	</c:if>
-<button onclick="location.href='/logOut'">logout</button><br>
-</c:if>
-<c:if test="${loginUser eq null }">
-<button onclick="location.href='/login'">login</button>
-</c:if>
+<%@include file="/WEB-INF/views/include/menu.jsp" %>
+
 <br>이유현
 <br>User(_id=607c335dc49e252c88301c77, name=Steve Jennings, email=tiwekacud@ussuwep.lu)
 <br>User(_id=607c335ec49e252c88301c78, name=Beulah Huff, email=meb@kijlago.dz)

@@ -1,4 +1,4 @@
-package com.come.in;
+package com.come.in.user;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

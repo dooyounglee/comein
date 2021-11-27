@@ -1,4 +1,4 @@
-package com.come.in;
+package com.come.in.exchange;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,14 +11,19 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Frequency {
+public class Exchange {
 
 	@Id
 	private String _id;
 	private String userId;
-	private int myWhite;
-	private int myRed;
-	private int wantWhite;
-	private int wantRed;
+	private String type;
+	private int myR;
+	private int myW;
+	private int exR;
+	private int exW;
+	private String fullYn;
+	private String useYn;
+	private String fromDt;
+	private String toDt;
 	
 }
