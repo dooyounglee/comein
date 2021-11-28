@@ -11,6 +11,7 @@
 <%@include file="/WEB-INF/views/include/menu.jsp" %>
 
 <br>이유현
+<br>User(_id=61a36f147d1810329be4c1a3, name=admin, email=admin)
 <br>User(_id=607c335dc49e252c88301c77, name=Steve Jennings, email=tiwekacud@ussuwep.lu)
 <br>User(_id=607c335ec49e252c88301c78, name=Beulah Huff, email=meb@kijlago.dz)
 <br>User(_id=607c335ec49e252c88301c79, name=Harriet Doyle, email=ban@feg.bf)

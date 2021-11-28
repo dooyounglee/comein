@@ -4,6 +4,9 @@
 <a href="/main">메인</a>
 <a href="/mypage">마이페이지</a>
 <a href="/exchange">교환</a>
+<c:if test="${loginUser ne null && loginUser.name eq 'admin' }">
+	<a href="/admin/exchange">교환_관리자</a>
+</c:if>
 
 <c:if test="${loginUser ne null }">
 	user:${loginUser.name }&nbsp;
