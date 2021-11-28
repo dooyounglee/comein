@@ -1,13 +1,11 @@
 package com.come.in.exchange;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +28,7 @@ public class ExchangeController {
 		HttpSession session = request.getSession();
 		User loginUser = (User)session.getAttribute("loginUser");
 		if(loginUser != null) {
-			List<Optional<Exchange>> exchangeList = exchangeService.getExchangeByUserId(loginUser.get_id());
+			List<Exchange> exchangeList = exchangeService.getExchangeByUserId(loginUser.get_id());
 			
 			model.addAttribute("exchangeList", exchangeList);
 			return "exchange/list";			
@@ -46,18 +44,21 @@ public class ExchangeController {
 	}
 	
 	@PostMapping("/add")
-	public String exchangeAddPost(@PathParam(value = "_id") String _id, Exchange exchange, Model model) {
+	public String exchangeAddPost(@PathParam(value = "_id") String _id, Exchange exchange, HttpServletRequest request, Model model) {
 		
-		exchange.set_id(new ObjectId(_id));
+		if(_id != null && !"".equals(_id)) {
+			exchange.set_id(_id);			
+		}
 		exchangeService.insertExchange(exchange);
+		
 		return "redirect:/exchange";
 	}
 	
 	@GetMapping("/view")
 	public String exchangeViewGet(@PathParam(value = "_id") String _id, Model model) {
 		
-		Optional<Exchange> exchange = exchangeService.getExchange(_id);
-		model.addAttribute("exchange", exchange.get());
+		Exchange exchange = exchangeService.getExchange(_id);
+		model.addAttribute("exchange", exchange);
 		return "exchange/view";
 	}
 	
@@ -71,8 +72,20 @@ public class ExchangeController {
 	@GetMapping("/edit")
 	public String exchangeEditGet(@PathParam(value = "_id") String _id, Model model) {
 		
-		Optional<Exchange> exchange = exchangeService.getExchange(_id);
-		model.addAttribute("exchange", exchange.get());
+		Exchange exchange = exchangeService.getExchange(_id);
+		model.addAttribute("exchange", exchange);
 		return "exchange/add";
+	}
+	
+	@GetMapping("/matching")
+	public String exchangeMatchingGet(@PathParam(value = "_id") String _id, HttpServletRequest request, Model model) {
+		
+		Exchange exchange = exchangeService.getExchange(_id);
+		
+		List<Exchange> matching = exchangeService.selectMatching(exchange);
+		model.addAttribute("matching", matching);
+		
+		model.addAttribute("exchange", exchange);
+		return "exchange/matching";
 	}
 }

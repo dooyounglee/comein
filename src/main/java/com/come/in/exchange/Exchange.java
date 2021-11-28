@@ -1,6 +1,5 @@
 package com.come.in.exchange;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class Exchange {
 
 	@Id
-	private ObjectId _id;
-	private ObjectId userId;
+	private String _id;
+	private String userId;
 	private String type;
 	private String targetId;
 	private int myR;

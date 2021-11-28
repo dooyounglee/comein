@@ -32,9 +32,6 @@ public class HomeController {
 	@GetMapping("/login")
 	public String loginGet(@RequestParam Map<String, Object> paramMap, Model model) {
 		
-		for(String x : paramMap.keySet()) {
-			System.out.println(x+": "+paramMap.get(x));
-		}
 		model.addAttribute("paramMap", paramMap);
 		return "login";
 	}

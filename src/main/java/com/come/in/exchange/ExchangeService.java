@@ -1,7 +1,6 @@
 package com.come.in.exchange;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,11 +10,11 @@ public class ExchangeService {
 	@Autowired
 	private ExchangeRepository exchangeRepo;
 	
-	public Optional<Exchange> getExchange(String _id) {
-		return exchangeRepo.findById(_id);
+	public Exchange getExchange(String _id) {
+		return exchangeRepo.findById(_id).get();
 	}
 	
-	public List<Optional<Exchange>> getExchangeByUserId(String userId) {
+	public List<Exchange> getExchangeByUserId(String userId) {
 		exchangeRepo.findByUserId(userId);
 		return exchangeRepo.findByUserId(userId);
 	}
@@ -26,6 +25,14 @@ public class ExchangeService {
 
 	public void delExchange(String _id) {
 		exchangeRepo.deleteById(_id);
+	}
+
+	public List<Exchange> selectMatching(Exchange newExchange) {
+		if(newExchange.getMyR() != 0 && newExchange.getExW() != 0) {
+			return exchangeRepo.findMatchingByExchangeRW(newExchange.getMyR(), newExchange.getExW());
+		}else {
+			return exchangeRepo.findMatchingByExchangeWR(newExchange.getMyW(), newExchange.getExR());
+		}
 	}
 	
 }

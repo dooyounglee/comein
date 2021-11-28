@@ -15,7 +15,7 @@
 	type:${exchange.type eq 'R' ? '랜덤' : '지정' }<br>
 	myR:${exchange.myR }-exW:${exchange.exW }<br>
 	myW:${exchange.myW }-exR:${exchange.exR }<br>
-	기간:${exchange.fromDt }-toDt:${exchange.toDt }<br>
+	기간:${exchange.fromDt }-${exchange.toDt }<br>
 	전체/일부:${exchange.fullYn }<br>
 </form>
 <button onclick="list()">목록</button>

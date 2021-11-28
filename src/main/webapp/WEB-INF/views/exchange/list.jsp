@@ -19,11 +19,11 @@
 			<th>fullYn</th>
 			<th>useYn</th>
 			<th>기간</th>
+			<th>매칭</th>
 		</tr>
 	</thead>
 	<tbody>
-	<c:forEach var="item" items="${exchangeList }">
-	<c:set var="row" value="${item.get() }"/>
+	<c:forEach var="row" items="${exchangeList }">
 		<tr>
 			<td><a href="/exchange/view?_id=${row._id }">${row._id }</a></td>
 			<td>${row.type }</td>
@@ -34,9 +34,15 @@
 			<td>${row.fullYn eq 'Y' ? '일괄' : '부분'}</td>
 			<td>${row.useYn }</td>
 			<td>${row.fromDt } ~ ${row.toDt }</td>
+			<td><button onclick="matching('${row._id }')">매칭</button></td>
 		</tr>
 	</c:forEach>
 	</tbody>
 </table>
 </body>
+<script>
+function matching(_id){
+	var popup = window.open("/exchange/matching?_id="+_id, "matching", "width=800,height=600");
+}
+</script>
 </html>

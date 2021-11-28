@@ -1,7 +1,6 @@
 package com.come.in.exchange;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -9,5 +8,11 @@ import org.springframework.data.mongodb.repository.Query;
 public interface ExchangeRepository extends MongoRepository<Exchange, String>{
 
 	@Query(value="{ 'userId' : ?0 }")
-	List<Optional<Exchange>> findByUserId(String userId);
+	List<Exchange> findByUserId(String userId);
+	
+	@Query(value="{'myW' : { $gte: ?1 }, 'exR' : { $lte: ?0 }}")
+	List<Exchange> findMatchingByExchangeRW(int myR, int exW);
+	
+	@Query(value="{'myR' : { $gte: ?1 }, 'exW' : { $lte: ?0 }}")
+	List<Exchange> findMatchingByExchangeWR(int myW, int exR);
 }

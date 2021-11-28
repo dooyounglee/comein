@@ -7,10 +7,12 @@
 <title>Insert title here</title>
 </head>
 <body>
-<%@include file="/WEB-INF/views/include/menu.jsp" %>
-<h1>마이페이지</h1>
-
-<h2>나의 교환</h2>
+_id:${exchange._id }<br>
+type:${exchange.type eq 'R' ? '랜덤' : '지정' }<br>
+myR:${exchange.myR }-exW:${exchange.exW }<br>
+myW:${exchange.myW }-exR:${exchange.exR }<br>
+기간:${exchange.fromDt }-${exchange.toDt }<br>
+전체/일부:${exchange.fullYn }<br>
 <table border="1">
 	<thead>
 		<tr>
@@ -23,10 +25,10 @@
 		</tr>
 	</thead>
 	<tbody>
-	<c:forEach var="row" items="${exchangeList }">
+	<c:forEach var="row" items="${matching }">
 		<tr>
 			<td>${row._id }</td>
-			<td>${row.type eq 'R' ? '랜덤' : '지정' }</td>
+			<td>${row.type }</td>
 			<td>
 				<c:if test="${row.myR ne 0 }">Red ${row.myR }개 -> White ${row.exW }개</c:if>
 				<c:if test="${row.myW ne 0 }">White ${row.myW }개 -> Red ${row.exR }개</c:if>
