@@ -10,12 +10,14 @@
 <body>
 <%@include file="/WEB-INF/views/include/menu.jsp" %>
 <h1>교환</h1>
-<form id="addForm" action="/exchange/add" method="post">
+<form id="addForm">
+	<input type="hidden" name="_id" value="${exchange._id }">
 	<input type="hidden" name="userId" value="${loginUser._id }">
 	type:<select name="type">
-			<option value="A">랜덤</option>
-			<option value="B">지정</option>
+			<option value="R">랜덤</option>
+			<option value="S">지정</option>
 		</select><br>
+	지정id:<input type="text" name="targetId"><br>
 	myR:<select name="myR">
 			<option value="-1">선택</option>
 			<c:forEach var="i" begin="0" end="14">
@@ -48,14 +50,35 @@
 		</select><br>
 	<input type="hidden" name="useYn" value="Y">
 </form>
-<button onclick="add()">add</button>
+<button onclick="add()">${exchange ne null ? 'edit' : 'add' }</button>
 </body>
 <script>
+<c:if test="${exchange ne null}">
+	init();
+</c:if>
+function init(){
+	$("select[name=type]").val('${exchange.type }');
+	$("select[name=targetId]").val('${exchange.targetId }');
+	$("select[name=myR]").val('${exchange.myR }');
+	$("select[name=myW]").val('${exchange.myW }');
+	$("select[name=exR]").val('${exchange.exR }');
+	$("select[name=exW]").val('${exchange.exW }');
+	$("input[name=fromDt]").val('${exchange.fromDt }');
+	$("input[name=toDt]").val('${exchange.toDt }');
+	$("select[name=fullYn]").val('${exchange.fullYn }');
+}
 function add(){
 	if(!validate())return;
+	$("#addForm").prop("action","/exchange/add");
+	$("#addForm").prop("method","post");
 	$("#addForm").submit();
 }
 function validate(){
+	if($("select[name=type]").val() == "S" && $("input[name=targetId]").val() == ""){
+		alert("아이디를 입력하세요.");
+		return false;
+	}
+	
 	if($("select[name=myR]").val() != "-1" && $("select[name=exW]").val() != "-1"){
 		$("select[name=myW]").val(0);$("select[name=exR]").val(0);
 		return true;

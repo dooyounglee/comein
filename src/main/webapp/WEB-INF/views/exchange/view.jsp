@@ -12,7 +12,7 @@
 <h1>교환</h1>
 <form id="viewForm" action="/exchange/del" method="post">
 	<input type="hidden" name="_id" value="${exchange._id }">
-	type:${exchange.type }<br>
+	type:${exchange.type eq 'R' ? '랜덤' : '지정' }<br>
 	myR:${exchange.myR }-exW:${exchange.exW }<br>
 	myW:${exchange.myW }-exR:${exchange.exR }<br>
 	기간:${exchange.fromDt }-toDt:${exchange.toDt }<br>
@@ -27,11 +27,11 @@ function list(){
 	location.href="/exchange";
 }
 function edit(){
-	alert("개발중");return false;
-	location.href="/exchange/edit";
+	location.href="/exchange/edit?_id=${exchange._id }";
 }
 function del(){
 	$("#viewForm").prop("action", "/exchange/del");
+	$("#viewForm").prop("method","post");
 	$("#viewForm").submit();
 }
 </script>

@@ -8,8 +8,9 @@
 </head>
 <body>
 <%@include file="/WEB-INF/views/include/menu.jsp" %>
-<h1>교환</h1>
-<a href="/exchange/add">Add</a>
+<h1>마이페이지</h1>
+
+<h2>나의 교환</h2>
 <table border="1">
 	<thead>
 		<tr>
@@ -25,8 +26,8 @@
 	<c:forEach var="item" items="${exchangeList }">
 	<c:set var="row" value="${item.get() }"/>
 		<tr>
-			<td><a href="/exchange/view?_id=${row._id }">${row._id }</a></td>
-			<td>${row.type }</td>
+			<td>${row._id }</td>
+			<td>${row.type eq 'R' ? '랜덤' : '지정' }</td>
 			<td>
 				<c:if test="${row.myR ne 0 }">Red ${row.myR }개 -> White ${row.exW }개</c:if>
 				<c:if test="${row.myW ne 0 }">White ${row.myW }개 -> Red ${row.exR }개</c:if>

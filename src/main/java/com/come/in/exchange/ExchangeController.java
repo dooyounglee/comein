@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,8 +46,9 @@ public class ExchangeController {
 	}
 	
 	@PostMapping("/add")
-	public String exchangeAddPost(Exchange exchange, Model model) {
+	public String exchangeAddPost(@PathParam(value = "_id") String _id, Exchange exchange, Model model) {
 		
+		exchange.set_id(new ObjectId(_id));
 		exchangeService.insertExchange(exchange);
 		return "redirect:/exchange";
 	}
@@ -64,5 +66,13 @@ public class ExchangeController {
 		
 		exchangeService.delExchange(_id);
 		return "redirect:/exchange";
+	}
+	
+	@GetMapping("/edit")
+	public String exchangeEditGet(@PathParam(value = "_id") String _id, Model model) {
+		
+		Optional<Exchange> exchange = exchangeService.getExchange(_id);
+		model.addAttribute("exchange", exchange.get());
+		return "exchange/add";
 	}
 }
