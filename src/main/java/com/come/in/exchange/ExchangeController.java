@@ -1,8 +1,11 @@
 package com.come.in.exchange;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 
@@ -12,8 +15,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.come.in.user.User;
+import com.google.gson.Gson;
 
 @Controller
 @RequestMapping("/exchange")
@@ -87,5 +92,51 @@ public class ExchangeController {
 		
 		model.addAttribute("exchange", exchange);
 		return "exchange/matching";
+	}
+	
+	@PostMapping("/requestMatching")
+	public void requestMatchingPost(HttpServletResponse response, @RequestParam String fromMatchingId, @RequestParam String toMatchingId) throws Exception {
+		
+		Exchange fromExchange = exchangeService.getExchange(fromMatchingId);
+		fromExchange.setMatchingId(toMatchingId);
+		fromExchange.setMatchingStatus("R");//R:요청 S:수락 W:수락대기
+		//exchangeService.insertExchange(fromExchange);
+		
+		Exchange toExchange = exchangeService.getExchange(toMatchingId);
+		toExchange.setMatchingId(toMatchingId);
+		toExchange.setMatchingStatus("W");//R:요청 S:수락 W:수락대기
+		//exchangeService.insertExchange(toExchange);
+		
+		Gson gson = new Gson();
+
+	    Map<String, Object> data = new HashMap<String, Object>();
+
+	    data.put("from", fromExchange.getUserId());
+	    data.put("to", toExchange.getUserId());
+	    data.put("status", "RW");
+
+	    response.getWriter().print(gson.toJson(data));
+	}
+	
+	@PostMapping("/acceptMatching")
+	public void acceptMatchingPost(HttpServletResponse response, @RequestParam String fromMatchingId, @RequestParam String toMatchingId) throws Exception {
+		
+		Exchange fromExchange = exchangeService.getExchange(fromMatchingId);
+		fromExchange.setMatchingStatus("S");//R:요청 S:수락 W:수락대기
+		//exchangeService.insertExchange(fromExchange);
+		
+		Exchange toExchange = exchangeService.getExchange(toMatchingId);
+		toExchange.setMatchingStatus("RS");//R:요청 S:수락 W:수락대기 RS:요청후매칭성공
+		//exchangeService.insertExchange(toExchange);
+		
+		Gson gson = new Gson();
+
+	    Map<String, Object> data = new HashMap<String, Object>();
+
+	    data.put("from", fromExchange.getUserId());
+	    data.put("to", toExchange.getUserId());
+	    data.put("status", "SRS");
+
+	    response.getWriter().print(gson.toJson(data));
 	}
 }

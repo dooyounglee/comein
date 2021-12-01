@@ -26,5 +26,6 @@ public class Exchange {
 	private String useYn;
 	private String fromDt;
 	private String toDt;
-	
+	private String matchingId;
+	private String matchingStatus;
 }

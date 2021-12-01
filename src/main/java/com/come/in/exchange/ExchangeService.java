@@ -35,5 +35,17 @@ public class ExchangeService {
 			return exchangeRepo.findMatchingByExchangeWR(newExchange.getMyW(), newExchange.getExR());
 		}
 	}
+
+	public void requestMatching(String fromMatchingId, String toMatchingId) {
+		Exchange exchange = exchangeRepo.findById(fromMatchingId).get();
+		exchange.setMatchingId(toMatchingId);
+		exchangeRepo.save(exchange);
+	}
+
+	public void updateMatchingStatus(String fromMatchingId, String status) {
+		Exchange exchange = exchangeRepo.findById(fromMatchingId).get();
+		exchange.setMatchingStatus(status);
+		exchangeRepo.save(exchange);
+	}
 	
 }

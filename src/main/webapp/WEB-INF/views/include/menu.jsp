@@ -24,15 +24,15 @@
 <br>
 <script>
 <c:if test="${loginUser ne null }">
-   const websocket = new WebSocket("ws://localhost:8081/ws/chat");
+   const websocket = new WebSocket("ws://<%=request.getServerName()%>:<%=request.getServerPort()%>/ws/chat");
 
    websocket.onmessage = onMessage;
    websocket.onopen = onOpen;
    websocket.onclose = onClose;
 
-   function send(){
+   function send(str){
 
-       websocket.send("${loginUser.name}:보냈누");
+       websocket.send(str);
    }
    
    //채팅창에서 나갔을 때
@@ -46,7 +46,10 @@
    }
 
    function onMessage(msg) {
-       console.log(msg.data);
+	   //alert(msg.data);
+	   if(JSON.parse(msg.data).to === '${loginUser._id }'){
+		   alert("매칭요청이 왔어요");
+	   }
    }
 </c:if>
 </script>

@@ -20,6 +20,7 @@
 			<th>useYn</th>
 			<th>기간</th>
 			<th>매칭</th>
+			<th>매칭상태</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -34,7 +35,15 @@
 			<td>${row.fullYn eq 'Y' ? '일괄' : '부분'}</td>
 			<td>${row.useYn }</td>
 			<td>${row.fromDt } ~ ${row.toDt }</td>
-			<td><button onclick="matching('${row._id }')">매칭</button></td>
+			<td>
+				<c:if test="${row.matchingStatus eq 'S' || row.matchingStatus eq 'RS' }">
+					매칭성공
+				</c:if>
+				<c:if test="${row.matchingStatus ne 'S' && row.matchingStatus ne 'RS' }">
+					<button onclick="matching('${row._id }')">매칭</button>
+				</c:if>
+			</td>
+			<td>${row.matchingStatus }</td>
 		</tr>
 	</c:forEach>
 	</tbody>
@@ -42,7 +51,7 @@
 </body>
 <script>
 function matching(_id){
-	var popup = window.open("/exchange/matching?_id="+_id, "matching", "width=800,height=600");
+	var popup = window.open("/exchange/matching?_id="+_id, "matching", "width=900,height=400");
 }
 </script>
 </html>
