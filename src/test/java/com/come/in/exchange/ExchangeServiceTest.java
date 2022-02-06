@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-@TestInstance(Lifecycle.PER_CLASS)
+//@TestInstance(Lifecycle.PER_CLASS)
 public class ExchangeServiceTest {
 
 	private Exchange exchange1;
@@ -26,7 +26,7 @@ public class ExchangeServiceTest {
     private ExchangeService exchangeService;
 	
 	@BeforeAll
-	public void beforeAll() {
+	public void beforeAll() throws Exception {
 		exchange1 = new Exchange();
 		exchange1.set_id("exId1");
 		exchange1.setUserId("userId1");
@@ -94,7 +94,7 @@ public class ExchangeServiceTest {
 	}
 	
 	@AfterAll
-	public void afterAll() {
+	public void afterAll() throws Exception {
 		exchangeService.delExchange("exId1");
 		exchangeService.delExchange("exId2");
 	}
