@@ -1,6 +1,8 @@
 package com.come.in.exchange;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,10 +38,24 @@ public class ExchangeService {
 		}
 	}
 
-	public void requestMatching(String fromMatchingId, String toMatchingId) {
-		Exchange exchange = exchangeRepo.findById(fromMatchingId).get();
-		exchange.setMatchingId(toMatchingId);
-		exchangeRepo.save(exchange);
+	public Map<String, Object> requestMatching(String fromMatchingId, String toMatchingId) {
+		Map<String, Object> resultMap = new HashMap<>();
+		
+		Exchange fromExchange = getExchange(fromMatchingId);
+		fromExchange.setMatchingId(toMatchingId);
+		fromExchange.setMatchingStatus("R");//R:요청 S:수락 W:수락대기
+		insertExchange(fromExchange);
+		
+		Exchange toExchange = getExchange(toMatchingId);
+		toExchange.setMatchingId(fromMatchingId);
+		toExchange.setMatchingStatus("W");//R:요청 S:수락 W:수락대기
+		insertExchange(toExchange);
+		
+		resultMap.put("fromExchangeUserId", fromExchange.getUserId());
+		resultMap.put("toExchangeUserId", toExchange.getUserId());
+		resultMap.put("status", "RW");
+		
+		return resultMap;
 	}
 
 	public void updateMatchingStatus(String fromMatchingId, String status) {
@@ -47,5 +63,24 @@ public class ExchangeService {
 		exchange.setMatchingStatus(status);
 		exchangeRepo.save(exchange);
 	}
-	
+
+	public Map<String, Object> acceptMatching(String fromMatchingId, String toMatchingId) {
+		Map<String, Object> resultMap = new HashMap<>();
+		
+		Exchange fromExchange = getExchange(fromMatchingId);
+		fromExchange.setMatchingId(toMatchingId);
+		fromExchange.setMatchingStatus("S");//R:요청 S:수락 W:수락대기
+		exchangeRepo.save(fromExchange);
+		
+		Exchange toExchange = getExchange(toMatchingId);
+		toExchange.setMatchingId(fromMatchingId);
+		toExchange.setMatchingStatus("RS");//R:요청 S:수락 W:수락대기
+		exchangeRepo.save(toExchange);
+		
+		resultMap.put("fromExchangeUserId", fromExchange.getUserId());
+		resultMap.put("toExchangeUserId", toExchange.getUserId());
+		resultMap.put("status", "SRS");
+		
+		return resultMap;
+	}
 }

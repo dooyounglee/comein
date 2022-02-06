@@ -97,22 +97,13 @@ public class ExchangeController {
 	@PostMapping("/requestMatching")
 	public void requestMatchingPost(HttpServletResponse response, @RequestParam String fromMatchingId, @RequestParam String toMatchingId) throws Exception {
 		
-		Exchange fromExchange = exchangeService.getExchange(fromMatchingId);
-		fromExchange.setMatchingId(toMatchingId);
-		fromExchange.setMatchingStatus("R");//R:요청 S:수락 W:수락대기
-		//exchangeService.insertExchange(fromExchange);
-		
-		Exchange toExchange = exchangeService.getExchange(toMatchingId);
-		toExchange.setMatchingId(toMatchingId);
-		toExchange.setMatchingStatus("W");//R:요청 S:수락 W:수락대기
-		//exchangeService.insertExchange(toExchange);
+		Map<String, Object> resultMap = exchangeService.requestMatching(fromMatchingId, toMatchingId);
 		
 		Gson gson = new Gson();
 
 	    Map<String, Object> data = new HashMap<String, Object>();
-
-	    data.put("from", fromExchange.getUserId());
-	    data.put("to", toExchange.getUserId());
+	    data.put("from", resultMap.get("fromExchangeUserId"));
+	    data.put("to", resultMap.get("toExchangeUserId"));
 	    data.put("status", "RW");
 
 	    response.getWriter().print(gson.toJson(data));
@@ -121,20 +112,13 @@ public class ExchangeController {
 	@PostMapping("/acceptMatching")
 	public void acceptMatchingPost(HttpServletResponse response, @RequestParam String fromMatchingId, @RequestParam String toMatchingId) throws Exception {
 		
-		Exchange fromExchange = exchangeService.getExchange(fromMatchingId);
-		fromExchange.setMatchingStatus("S");//R:요청 S:수락 W:수락대기
-		//exchangeService.insertExchange(fromExchange);
-		
-		Exchange toExchange = exchangeService.getExchange(toMatchingId);
-		toExchange.setMatchingStatus("RS");//R:요청 S:수락 W:수락대기 RS:요청후매칭성공
-		//exchangeService.insertExchange(toExchange);
+		Map<String, Object> resultMap = exchangeService.acceptMatching(fromMatchingId, toMatchingId);
 		
 		Gson gson = new Gson();
 
 	    Map<String, Object> data = new HashMap<String, Object>();
-
-	    data.put("from", fromExchange.getUserId());
-	    data.put("to", toExchange.getUserId());
+	    data.put("from", resultMap.get("fromExchangeUserId"));
+	    data.put("to", resultMap.get("toExchangeUserId"));
 	    data.put("status", "SRS");
 
 	    response.getWriter().print(gson.toJson(data));
