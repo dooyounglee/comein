@@ -43,8 +43,6 @@ import static org.mockito.Mockito.when;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-//@WebMvcTest
-//@WebAppConfiguration
 class HomeControllerTest {
 
 	@Autowired
@@ -80,7 +78,7 @@ class HomeControllerTest {
 	@Test
 	public void LoginGetTest() throws Exception {
 		//When
-		ResultActions resultActions = mockMvc.perform(get("/main"));
+		ResultActions resultActions = mockMvc.perform(get("/login"));
 		
 		//Then
 		resultActions.andExpect(status().isOk())
@@ -88,14 +86,12 @@ class HomeControllerTest {
 	}
 	
 	@Test
-	public void LoginPostTest_WhenUserIsPresent() throws Exception {
+	public void LoginPostTest_WhenUserIsNotPresent() throws Exception {
 		//Given
 		Optional<User> user = Optional.ofNullable(null);
 		when(userService.getUser("testId")).thenReturn(user);
 		
 		//When
-		//Map<String, Object> paramMap = new HashMap<>();
-		//paramMap.put("id", "testId");
 		ResultActions resultActions = mockMvc.perform(post("/login").with(csrf()).param("id", "testId"));
 		
 		//Then
@@ -105,7 +101,7 @@ class HomeControllerTest {
 	}
 	
 	@Test
-	public void LoginPostTest_WhenUserIsNotPresent() throws Exception {
+	public void LoginPostTest_WhenUserIsPresent() throws Exception {
 		//Given
 		Optional<User> user = Optional.of(new User());
 		user.get().set_id("testId");
@@ -114,12 +110,10 @@ class HomeControllerTest {
 		when(userService.getUser("testId")).thenReturn(user);
 		
 		//When
-		//Map<String, Object> paramMap = new HashMap<>();
-		//paramMap.put("id", "testId");
-		ResultActions resultActions = mockMvc.perform(post("/main").with(csrf()).param("id", "testId"));
+		ResultActions resultActions = mockMvc.perform(post("/login").with(csrf()).param("id", "testId"));
 		
 		//Then
-		resultActions.andExpect(status().isOk())
+		resultActions.andExpect(status().isFound())
 		.andExpect(redirectedUrl("/main"));
 	}
 }
