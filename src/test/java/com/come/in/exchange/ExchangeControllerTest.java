@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.*;
@@ -39,6 +40,7 @@ import com.google.gson.Gson;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -50,6 +52,8 @@ class ExchangeControllerTest {
 	
 	@MockBean
 	private ExchangeService exchangeService;
+	
+	private Gson gson = new Gson();
 	
 	protected MockHttpSession session;
 	
@@ -168,5 +172,98 @@ class ExchangeControllerTest {
 		))
 		.andExpect(model().attribute("exchange", is(exchange1)))
 		.andExpect(view().name("exchange/view"));
+	}
+	
+	@Test
+	public void exchangeDelPostTest() throws Exception {
+		//Given
+		doNothing().when(exchangeService).delExchange("");
+		
+		//when
+		ResultActions resultActions = mockMvc.perform(post("/exchange/del"));
+		
+		//Then
+		resultActions
+		.andExpect(status().isFound())
+		.andExpect(redirectedUrl("/exchange"));
+	}
+	
+	@Test
+	public void exchangeEditGetTest() throws Exception {
+		//Given
+		when(exchangeService.getExchange("exId1")).thenReturn(exchange1);
+		
+		//When
+		ResultActions resultActions = mockMvc.perform(get("/exchange/edit").param("_id", "exId1"));
+		
+		//Then
+		resultActions
+		.andExpect(status().isOk())
+		.andExpect(model().attribute("exchange", is(exchange1)))
+		.andExpect(view().name("exchange/add"));
+	}
+	
+	@Test
+	public void exchangeMatchingGetTest() throws Exception {
+		//Given
+		when(exchangeService.getExchange("exId1")).thenReturn(exchange1);
+		List<Exchange> matching = Arrays.asList(exchange2);
+		when(exchangeService.selectMatching(exchange1)).thenReturn(matching);
+		
+		//When
+		ResultActions resultActions = mockMvc.perform(get("/exchange/matching").param("_id", "exId1"));
+		
+		//Then
+		resultActions
+		.andExpect(status().isOk())
+		.andExpect(model().attribute("matching", is(matching)))
+		.andExpect(model().attribute("exchange", is(exchange1)))
+		.andExpect(view().name("exchange/matching"));
+	}
+	
+	@Test
+	public void requestMatchingPostTest() throws Exception {
+		//Given
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("fromExchangeUserId", "exId1");
+		resultMap.put("toExchangeUserId", "exId2");
+		resultMap.put("status", "RW");
+		when(exchangeService.requestMatching("exId1", "exId2")).thenReturn(resultMap);
+		
+		//When
+		ResultActions resultActions = mockMvc.perform(post("/exchange/requestMatching").param("fromMatchingId", "exId1").param("toMatchingId", "exId2"));
+		
+		//Then
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("from", resultMap.get("fromExchangeUserId"));
+		data.put("to", resultMap.get("toExchangeUserId"));
+		data.put("status", "RW");
+		
+		resultActions
+		.andExpect(status().isOk())
+		.andExpect(content().string(gson.toJson(data)));
+	}
+	
+	@Test
+	public void acceptMatchingPostTest() throws Exception {
+		//Given
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("fromExchangeUserId", "exId2");
+		resultMap.put("toExchangeUserId", "exId1");
+		resultMap.put("status", "SRS");
+		when(exchangeService.acceptMatching("exId2", "exId1")).thenReturn(resultMap);
+		
+		//When
+		ResultActions resultActions = mockMvc.perform(post("/exchange/acceptMatching").param("fromMatchingId", "exId2").param("toMatchingId", "exId1"));
+		
+		//Then
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("from", resultMap.get("fromExchangeUserId"));
+		data.put("to", resultMap.get("toExchangeUserId"));
+		data.put("status", "SRS");
+		
+		resultActions
+		.andExpect(status().isOk())
+		.andExpect(content().string(gson.toJson(data)));
 	}
 }

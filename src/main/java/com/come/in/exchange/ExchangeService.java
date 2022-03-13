@@ -18,7 +18,6 @@ public class ExchangeService {
 	}
 	
 	public List<Exchange> getExchangeByUserId(String userId) {
-		exchangeRepo.findByUserId(userId);
 		return exchangeRepo.findByUserId(userId);
 	}
 	
