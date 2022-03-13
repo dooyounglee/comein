@@ -1,48 +1,36 @@
 package com.come.in;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.come.in.user.User;
 import com.come.in.user.UserService;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import static org.mockito.Mockito.when;
-
 @AutoConfigureMockMvc
 @SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS)
 class HomeControllerTest {
 
 	@Autowired
@@ -51,12 +39,18 @@ class HomeControllerTest {
 	@MockBean
 	private UserService userService;
 	
+	private Optional<User> user;
+	
 	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
+	public void setUpBeforeClass() throws Exception {
+		user = Optional.of(new User());
+		user.get().set_id("testId");
+		user.get().setEmail("test@test.com");
+		user.get().setName("testName");
 	}
 
 	@AfterAll
-	static void tearDownAfterClass() throws Exception {
+	public void tearDownAfterClass() throws Exception {
 	}
 
 	//@Test
@@ -77,6 +71,9 @@ class HomeControllerTest {
 	
 	@Test
 	public void LoginGetTest() throws Exception {
+		//Given
+		when(userService.getUser("testId")).thenReturn(user);
+		
 		//When
 		ResultActions resultActions = mockMvc.perform(get("/login"));
 		
@@ -103,10 +100,6 @@ class HomeControllerTest {
 	@Test
 	public void LoginPostTest_WhenUserIsPresent() throws Exception {
 		//Given
-		Optional<User> user = Optional.of(new User());
-		user.get().set_id("testId");
-		user.get().setEmail("test@test.com");
-		user.get().setName("testName");
 		when(userService.getUser("testId")).thenReturn(user);
 		
 		//When
@@ -114,6 +107,7 @@ class HomeControllerTest {
 		
 		//Then
 		resultActions.andExpect(status().isFound())
-		.andExpect(redirectedUrl("/main"));
+		.andExpect(redirectedUrl("/main"))
+		.andExpect(request().sessionAttribute("loginUser", user.get()));
 	}
 }
