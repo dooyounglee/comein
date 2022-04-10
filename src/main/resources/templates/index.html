@@ -64,7 +64,7 @@
 			<div v-if="showMenuId === 1">1번메뉴</div>
 			<div v-if="showMenuId === 2">2번메뉴</div>
 			<div v-if="showMenuId === 3">
-				<li v-for="frequency of frequencies">Red {{ frequency.myR }} -> White {{ frequency.exW }}</li>
+				<li v-for="frequency of frequencies">{{ `Red ${frequency.myR} -> White ${frequency.exW}` }}</li>
 			</div>
 		</section>
 		
