@@ -61,7 +61,11 @@
 				<br>User(_id=607c3363c49e252c88301c90, name=Joseph Stevens, email=ko@jabjet.org)
 				<br>User(_id=607c3363c49e252c88301c91, name=Warren Pratt, email=zetokmiw@del.ps)
 			</div>
-			<div v-if="showMenuId === 1">1번메뉴</div>
+			<div v-if="showMenuId === 1">
+				<li v-for="frequency of frequencies">{{ `Red ${frequency.myR} -> White ${frequency.exW}` }}</li>
+				<hr>
+				<li v-for="user of users">{{ user }}</li>
+			</div>
 			<div v-if="showMenuId === 2">2번메뉴</div>
 			<div v-if="showMenuId === 3">
 				<li v-for="frequency of frequencies">{{ `Red ${frequency.myR} -> White ${frequency.exW}` }}</li>

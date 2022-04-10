@@ -36,10 +36,15 @@ new Vue({
 		login() {
 			jsnPost("/users/login", {_id: this.id}).then((result) => {
 				this.user = result.user;
+				this.users = result.users;
+				//jsnGet("/exchange/list").then((result) => {
+				//	this.frequencies = result;
+				//});
 				this.frequencies = result.frequencies;
 			});
 			this.id = '';
 			this.showMenuId = 3;
+			
 		},
 		logout() {
 			jsnGet("/users/logout").then();
@@ -49,7 +54,15 @@ new Vue({
 		},
 		updateMenus() {
 			let tmp_menus = [...menus];
-			this.menus = tmp_menus.filter(a => a.isLogin === this.isUser);
+			if(!this.user){
+				this.menus = tmp_menus.filter(a => a.menuId === 0);
+			}else{
+				if(this.user.name == 'admin'){
+					this.menus = tmp_menus.filter(a => a.menuId != 0);
+				}else{
+					this.menus = tmp_menus.filter(a => a.isLogin && a.menuId != 1);
+				}
+			}
 		},
 	},
 	computed: {
@@ -66,13 +79,9 @@ new Vue({
 		jsnGet("/users/checkSession").then((result) => {
 			if(!!result){
 				this.id = result._id;
-				this.user = result;
-				this.showMenuId = 3;
 				this.login();
 			}else{
-				this.user = null;
-				this.frequencies = null;
-				this.showMenuId = 0;
+				this.logout();
 			}
 		}).catch(e=>console.log(e));
 	},
