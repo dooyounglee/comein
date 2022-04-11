@@ -48,4 +48,7 @@ public class ExchangeService {
 		exchangeRepo.save(exchange);
 	}
 	
+	public List<Exchange> getAllExchange() {
+		return exchangeRepo.findAll();
+	}
 }

@@ -27,9 +27,11 @@ new Vue({
 		return {
 			showMenuId: 0,
 			menus: [[...menus][0]],
-			frequencies: null,
+			exchanges: null,
 			id: '',
 			user: null,
+			selectedExchange: null,
+			matchingList: null,
 		}
 	},
 	methods: {
@@ -40,7 +42,7 @@ new Vue({
 				//jsnGet("/exchange/list").then((result) => {
 				//	this.frequencies = result;
 				//});
-				this.frequencies = result.frequencies;
+				this.exchanges = result.exchanges;
 			});
 			this.id = '';
 			this.showMenuId = 3;
@@ -49,8 +51,10 @@ new Vue({
 		logout() {
 			jsnGet("/users/logout").then();
 			this.user = null;
-			this.frequencies = null;
+			this.exchanges = null;
 			this.showMenuId = 0;
+			this.selectedExchange = null;
+			this.matchingList = null;
 		},
 		updateMenus() {
 			let tmp_menus = [...menus];
@@ -64,6 +68,20 @@ new Vue({
 				}
 			}
 		},
+		match(exchange) {
+			jsnGet("/exchange/matching?_id="+exchange._id).then((result) => {
+				this.matchingList = result;
+			});
+			this.selectedExchange = exchange;
+		},
+		/*matchingCount() {
+			for(let exchange of this.exchanges){
+				jsnGet("/exchange/matching?_id="+exchange._id).then((result) => {
+					exchange.matchingCount = result.length;
+					this.$forceUpdate();
+				});
+			}
+		},*/
 	},
 	computed: {
 		isUser() {
@@ -74,6 +92,9 @@ new Vue({
 		isUser: {
 			handler: 'updateMenus',
 		},
+		/*exchanges: {
+			handler: 'matchingCount',
+		}*/
 	},
 	created() {
 		jsnGet("/users/checkSession").then((result) => {

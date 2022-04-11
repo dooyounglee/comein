@@ -28,4 +28,7 @@ public class Exchange {
 	private String toDt;
 	private String matchingId;
 	private String matchingStatus;
+	
+	private int matchingCount;
+	private String userName;
 }

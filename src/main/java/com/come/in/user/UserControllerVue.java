@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.come.in.exchange.Exchange;
 import com.come.in.exchange.ExchangeService;
 import com.google.gson.Gson;
 
@@ -49,7 +50,17 @@ public class UserControllerVue {
 		    
 		    Map<String, Object> map = new HashMap<String, Object>();
 		    map.put("user", user.get());
-		    map.put("frequencies", exchangeService.getExchangeByUserId(user.get().get_id()));
+		    if("admin".equals(user.get().getName())) {
+		    	map.put("users", userService.getAllUser());
+		    	map.put("exchanges", exchangeService.getAllExchange());
+		    }else {
+		    	List<Exchange> exchanges = exchangeService.getExchangeByUserId(user.get().get_id());
+				
+				for(Exchange ex : exchanges) {
+					ex.setMatchingCount(exchangeService.selectMatching(ex).size());
+				}
+		    	map.put("exchanges", exchanges);
+		    }
 		    return map;
 		}else {
 			return null;
@@ -61,7 +72,6 @@ public class UserControllerVue {
 	public User checkSessionGet(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		User user = (User)session.getAttribute("loginUser");
-		System.out.println(user);
 		return user;
 	}
 	

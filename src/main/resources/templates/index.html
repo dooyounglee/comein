@@ -23,7 +23,7 @@
 				<button @click="logout"><i class="material-icons">logout</i> Logout</button>
 			</div>
 			<div class="menus">
-				<div class="menu" :class="{ selected: menu.menuId === showMenuId }"v-for="menu of menus" @click="showMenuId = menu.menuId">
+				<div class="menu" :class="{ selected: menu.menuId === showMenuId }" v-for="menu of menus" @click="showMenuId = menu.menuId">
 					{{ menu.menuName }}
 				</div>
 			</div>
@@ -62,18 +62,40 @@
 				<br>User(_id=607c3363c49e252c88301c91, name=Warren Pratt, email=zetokmiw@del.ps)
 			</div>
 			<div v-if="showMenuId === 1">
-				<li v-for="frequency of frequencies">{{ `Red ${frequency.myR} -> White ${frequency.exW}` }}</li>
+				<li v-for="exchange of exchanges">{{ `Red ${exchange.myR} -> White ${exchange.exW}` }}</li>
 				<hr>
 				<li v-for="user of users">{{ user }}</li>
 			</div>
 			<div v-if="showMenuId === 2">2번메뉴</div>
-			<div v-if="showMenuId === 3">
-				<li v-for="frequency of frequencies">{{ `Red ${frequency.myR} -> White ${frequency.exW}` }}</li>
+			<div id="exchange" v-if="showMenuId === 3">
+					<li :class="{ selected: selectedExchange === exchange }" v-for="exchange of exchanges" @click="match(exchange)">
+						<template v-if="exchange.myR != 0">
+							<span style="color:red">{{ exchange.myR }} </span> -> <span style="color:white">{{ exchange.exW }} </span>
+							({{ exchange.matchingCount || 0 }})
+						</template>
+						<template v-else>
+							<span style="color:white">{{ exchange.myW }} </span> -> <span style="color:red">{{ exchange.exR }} </span>
+							({{ exchange.matchingCount || 0 }})
+						</template>
+					</li>
 			</div>
 		</section>
 		
 		<!-- Preview pane -->
 		<aside class="preview">
+			<template v-if="matchingList != null && matchingList.length == 0">
+			그거랑은 매칭할만한게 없어요
+			</template>
+			<li v-for="exchange of matchingList">
+				<template v-if="exchange.myR != 0">
+					<span style="color:red">{{ exchange.myR }} </span> -> <span style="color:white">{{ exchange.exW }} </span>
+					({{ exchange.userName }})
+				</template>
+				<template v-else>
+					<span style="color:white">{{ exchange.myW }} </span> -> <span style="color:red">{{ exchange.exR }} </span>
+					({{ exchange.userName }})
+				</template>
+			</li>
 		</aside>
 	</div>
 	

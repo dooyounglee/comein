@@ -44,6 +44,13 @@ body {
   float: right;
 }
 
+.main {
+	background: #ade2ca;
+}
+.preview {
+	background: rgb(128, 128, 128);
+}
+
 button,
 input,
 textarea {
@@ -58,6 +65,15 @@ button,
 .menu.selected {
   background: #40b883;
   color: white;
+}
+
+#exchange .selected {
+  background: #40b883;
+  color: white;
+}
+
+#exchange li {
+  cursor: pointer;
 }
 
 button {
