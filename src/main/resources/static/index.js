@@ -1,26 +1,6 @@
 import { jsnGet, jsnPost } from './loadJson.js';
-const menus = [
-				{
-					menuId: 0,
-					menuName: 'login',
-					isLogin: false,
-				},
-				{
-					menuId: 1,
-					menuName: 'admin',
-					isLogin: true,
-				},
-				{
-					menuId: 2,
-					menuName: 'mypage',
-					isLogin: true,
-				},
-				{
-					menuId: 3,
-					menuName: 'frecuency',
-					isLogin: true,
-				},
-			];
+import { menus, statusCd, cardSeg } from './code.js';
+
 new Vue({
 	el: '#notebook',
 	data() {
@@ -32,6 +12,8 @@ new Vue({
 			user: null,
 			selectedExchange: null,
 			matchingList: null,
+			statusCd: statusCd,
+			cardSeg: cardSeg,
 		}
 	},
 	methods: {
