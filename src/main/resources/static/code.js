@@ -38,3 +38,9 @@ export const cardSeg = {
 	"RS" : "success",//Request
 	"RW" : "warning",//Request
 }
+
+export const spinner =
+'<div id="disabledDiv" class="modal-backdrop show">'
++ '<div class="d-flex justify-content-center">'
++ '<div class="spinner-border text-success" style="width: 200px; height: 200px; position: fixed; top: 50%; right: 50%;" role="status">'
++ '</div></div></div>';

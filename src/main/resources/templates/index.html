@@ -10,8 +10,9 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
 		crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -27,7 +28,7 @@
 			<!-- header -->
 			<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
 				<div class="container-fluid">
-					<a class="navbar-brand" href="#">Navbar</a>
+					<a class="navbar-brand">Navbar</a>
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
 						data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
 						aria-expanded="false" aria-label="Toggle navigation">
@@ -35,11 +36,11 @@
 					</button>
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-							<!--<li class="nav-item" v-for="menu of menus" >
-					<a class="nav-link" @click="showMenuId = menu.menuId" :class="{ active: menu.menuId === showMenuId }" aria-current="page"
-						href="#">{{ menu.menuName }}</a>
-				</li>-->
-							<li class="nav-item">
+							<li class="nav-item" v-for="menu of menus" >
+								<a class="nav-link" @click="showMenuId = menu.menuId" :class="{ active: menu.menuId === showMenuId }" aria-current="page"
+									href="#">{{ menu.menuName }}</a>
+							</li>
+							<!--<li class="nav-item">
 								<a class="nav-link active" aria-current="page" href="#">Home</a>
 							</li>
 							<li class="nav-item">
@@ -61,20 +62,31 @@
 							</li>
 							<li class="nav-item">
 								<a class="nav-link disabled">Disabled</a>
-							</li>
+							</li>-->
 						</ul>
-						<form class="d-flex">
+						<!--<form class="d-flex">
 							<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
 							<button class="btn btn-outline-success" type="submit">Search</button>
-						</form>
+						</form>-->
+						<template v-if="user != undefined">
+							<span class="text-white">Hi, {{ user.name }}!!</span>
+						</template>
 					</div>
 				</div>
 			</nav>
 
 			<div class="row">
-				<section class="col-6">
+				<section class="col-8">
 					<div v-if="showMenuId === 0">
-						<input v-model="id" /> <button @click="login">login</button><br>
+						<div class="container">
+						<form class="row justify-content-md-center col-md-6">
+							<div class="input-group mb-2">
+							  <span class="input-group-text bg-primary text-white" id="inputGroup-sizing-default">ID</span>
+							  <input v-model="id" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+								<button type="button" class="btn btn-primary" @click="login">login</button>
+							</div>
+						</form>
+						</div>
 						<br>User(_id=61a36f147d1810329be4c1a3, name=admin, email=admin)
 						<br>User(_id=607c335dc49e252c88301c77, name=Steve Jennings, email=tiwekacud@ussuwep.lu)
 						<br>User(_id=607c335ec49e252c88301c78, name=Beulah Huff, email=meb@kijlago.dz)
@@ -111,29 +123,35 @@
 					</div>
 					<div v-if="showMenuId === 2">2번메뉴</div>
 					<div id="exchange" v-if="showMenuId === 3">
-						<div class="row row-cols-md-1 row-cols-lg-3 g-4">
+						<button type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+						  Exchange
+						</button>
+						<div class="row row-cols-md-1 row-cols-lg-3 g-3">
 							<div v-for="exchange of exchanges" class="col">
 								<div @click="match(exchange)"
 									:class="[ 'btn card text-white mb-3', 'bg-' + cardSeg[exchange.matchingStatus] ]"
 									style="max-width: 18rem;">
-									<div class="card-header">{{ statusCd[exchange.matchingStatus] || '찾는중' }}</div>
+									<div class="card-header">
+										<template v-if="exchange.myR != 0">
+											<span style="color:red">{{ exchange.myR }} </span>
+											->
+											<span style="color:white">{{ exchange.exW }} </span>
+											({{ exchange.matchingCount || 0 }})
+										</template>
+										<template v-else>
+											<span style="color:white">{{ exchange.myW }} </span>
+											->
+											<span style="color:red">{{ exchange.exR }} </span>
+											({{ exchange.matchingCount || 0 }})
+										</template>
+									</div>
 									<div class="card-body">
 										<h5 class="card-title">
-											<template v-if="exchange.myR != 0">
-												<span style="color:red">{{ exchange.myR }} </span>
-												->
-												<span style="color:white">{{ exchange.exW }} </span>
-												({{ exchange.matchingCount || 0 }})
-											</template>
-											<template v-else>
-												<span style="color:white">{{ exchange.myW }} </span>
-												->
-												<span style="color:red">{{ exchange.exR }} </span>
-												({{ exchange.matchingCount || 0 }})
-											</template>
+											{{ statusCd[exchange.matchingStatus] || '찾는중' }}
+											<button type="button" class="btn btn-danger" @click.stop="delExchange(exchange._id)">X</button>
 										</h5>
 										<p class="card-text">
-											{{ exchange.fromDt }} ~ {{ exchange.toDt }}
+											{{ exchange.matchingCount || 0 }} 개 매칭
 										</p>
 									</div>
 								</div>
@@ -143,7 +161,7 @@
 				</section>
 
 				<!-- Preview pane -->
-				<aside class="col-6">
+				<aside class="col-4">
 					<ul class="list-group">
 						<template v-if="matchingList != null && matchingList.length == 0">
 							<li class="list-group-item">그거랑은 매칭할만한게 없어요</li>
@@ -167,11 +185,55 @@
 				</aside>
 			</div>
 		</div>
+		
+		<!-- Modal -->
+		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header bg-primary bg-opacity-25">
+		        <h5 class="modal-title" id="exampleModalLabel">Create an Exchange</h5>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body bg-primary bg-opacity-25">
+		        <form>
+		        	<select class="form-select" aria-label="Default select example" v-model="type">
+					  <option value="R"><span class="text-danger">Red</span> -> <span class="text-white">White</span></option>
+					  <option value="W"><span class="text-white">White</span> -> <span class="text-danger">Red</span></option>
+					</select>
+					<template v-if="type == 'R'">
+			          <div class="mb-3">
+			            <label for="MyR" class="col-form-label"><span class="text-danger">myR</span></label>
+			            <input type="text" class="form-control" id="MyR" v-model="myR">
+			          </div>
+			          <div class="mb-3">
+			            <label for="exW" class="col-form-label"><span class="text-white">exW</span></label>
+			            <input type="text" class="form-control" id="exW" v-model="exW">
+			          </div>
+					</template>
+					<template v-if="type == 'W'">
+			          <div class="mb-3">
+			            <label for="MyW" class="col-form-label"><span class="text-white">myW</span></label>
+			            <input type="text" class="form-control" id="MyW" v-model="myW">
+			          </div>
+			          <div class="mb-3">
+			            <label for="exR" class="col-form-label"><span class="text-danger">exR</span></label>
+			            <input type="text" class="form-control" id="exR" v-model="exR">
+			          </div>
+					</template>
+		        </form>
+		      </div>
+		      <div class="modal-footer bg-primary bg-opacity-25">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addExchange">Save changes</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
 	</div>
-
-	<!-- Some JavaScript -->
-	<script src="index.js" type="module"></script>
-	<script src="loadJson.js" type="module"></script>
 </body>
 
+	<!-- Some JavaScript -->
+	<!--<script src="nav-bar.js" type="module"></script>-->
+	<script src="index.js" type="module"></script>
+	<script src="loadJson.js" type="module"></script>
 </html>

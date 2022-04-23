@@ -1,8 +1,21 @@
 import { jsnGet, jsnPost } from './loadJson.js';
-import { menus, statusCd, cardSeg } from './code.js';
+import { menus, statusCd, cardSeg, spinner } from './code.js';
 
 new Vue({
 	el: '#notebook',
+	/*template: `<div>
+		<div class="container">
+			<nav-bar/>
+			<div class="row">
+				<section class="col-6">
+					
+				</section>
+				<aside class="col-6">
+				
+				</aside>
+			</div>
+		</div>
+	</div>`,*/
 	data() {
 		return {
 			showMenuId: 0,
@@ -14,6 +27,8 @@ new Vue({
 			matchingList: null,
 			statusCd: statusCd,
 			cardSeg: cardSeg,
+			type: 'R',
+			myR: 0, exW: 0, myW: 0, exR: 0,
 		}
 	},
 	methods: {
@@ -64,6 +79,35 @@ new Vue({
 				});
 			}
 		},*/
+		addExchange() {
+			jsnPost("/exchange/add", {
+				userId: this.user._id,
+				type: this.type,
+				myR: this.myR,
+				exW: this.exW,
+				myW: this.myW,
+				exR: this.exR,
+				useYn: 'Y',
+			}).then((result) => {
+				jsnGet('/exchange/list').then((result) => {
+					this.exchanges = result.exchanges;
+				})
+				$('#exampleModal').modal('hide');
+			});
+		},
+		delExchange(id) {
+			$('body').append(spinner)
+			jsnPost("/exchange/del", {
+				_id: id,
+			}).then((result) => {
+				jsnGet('/exchange/list').then((result1) => {
+					this.exchanges = result1.exchanges;
+					this.$forceUpdate();
+					alert(result.message)
+					$('.modal-backdrop').remove();
+				})
+			});
+		},
 	},
 	computed: {
 		isUser() {
@@ -88,5 +132,8 @@ new Vue({
 			}
 		}).catch(e=>console.log(e));
 	},
+	/*mounted() {
+		$(this.$refs.vuemodal).on("hidden.bs.modal", () => {})
+	},*/
 })
 
