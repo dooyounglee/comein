@@ -79,7 +79,21 @@ new Vue({
 				});
 			}
 		},*/
+		watchExchanges() {
+			this.initMatching();
+		},
+		initMatching() {
+			this.matchingList = null;
+		},
+		dataInit() {
+			this.type = 'R';
+			this.myR = 0;
+			this.exW = 0;
+			this.myW = 0;
+			this.exR = 0;
+		},
 		addExchange() {
+			$('body').append(spinner)
 			jsnPost("/exchange/add", {
 				userId: this.user._id,
 				type: this.type,
@@ -89,24 +103,29 @@ new Vue({
 				exR: this.exR,
 				useYn: 'Y',
 			}).then((result) => {
-				jsnGet('/exchange/list').then((result) => {
-					this.exchanges = result.exchanges;
-				})
-				$('#exampleModal').modal('hide');
-			});
-		},
-		delExchange(id) {
-			$('body').append(spinner)
-			jsnPost("/exchange/del", {
-				_id: id,
-			}).then((result) => {
 				jsnGet('/exchange/list').then((result1) => {
 					this.exchanges = result1.exchanges;
-					this.$forceUpdate();
-					alert(result.message)
-					$('.modal-backdrop').remove();
 				})
+				alert(result.message);
+				$('#exampleModal').modal('hide');
+				$('#disabledDiv').remove();
 			});
+			this.dataInit();
+		},
+		delExchange(id) {
+			if(confirm("really delete?")){
+				$('body').append(spinner)
+				jsnPost("/exchange/del", {
+					_id: id,
+				}).then((result) => {
+					jsnGet('/exchange/list').then((result1) => {
+						this.exchanges = result1.exchanges;
+						this.$forceUpdate();
+						alert(result.message)
+						$('#disabledDiv').remove();
+					})
+				});
+			}
 		},
 	},
 	computed: {
@@ -118,9 +137,9 @@ new Vue({
 		isUser: {
 			handler: 'updateMenus',
 		},
-		/*exchanges: {
-			handler: 'matchingCount',
-		}*/
+		exchanges: {
+			handler: 'watchExchanges'/*'matchingCount'*/,
+		}
 	},
 	created() {
 		jsnGet("/users/checkSession").then((result) => {
