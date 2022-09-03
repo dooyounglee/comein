@@ -9,7 +9,11 @@
 }*/
 
 export async function jsnGet (url) {
-	const response = await fetch('https://gostbaducking1-mongodb1.herokuapp.com'+url);
+	const response = await fetch('https://gostbaducking1-mongodb1.herokuapp.com'+url, {
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
 	//console.log(response)
 	//if(response.ok){
 		//const data = response.json();
@@ -21,6 +25,9 @@ export async function jsnGet (url) {
 export async function jsnPost (url, body) {
 	const response = await fetch('https://gostbaducking1-mongodb1.herokuapp.com'+url, {
 		method: 'POST',
+		headers: {
+			"Content-Type": "application/json",
+		},
 		body: JSON.stringify(body),
 	});
 	//if(response.ok){

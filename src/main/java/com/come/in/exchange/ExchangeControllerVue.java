@@ -73,6 +73,7 @@ public class ExchangeControllerVue {
 			ex.setMatchingCount(exchangeService.selectMatching(ex).size());
 		}
 		resultMap.put("exchanges", exchanges);
+		resultMap.put("message", "Create!!");
 		return resultMap;
 	}
 	
